@@ -1,0 +1,26 @@
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+  <h2 class="text-2xl font-bold mb-6 text-center">Create New Chat Room</h2>
+  
+  <%= form_with model: @chat_room, local: true, class: "space-y-4" do |form| %>
+    <% if @chat_room.errors.any? %>
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <ul class="list-disc list-inside">
+          <% @chat_room.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <div>
+      <%= form.label :name, class: "block text-sm font-medium text-gray-700" %>
+      <%= form.text_field :name, placeholder: "Enter room name", 
+          class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" %>
+    </div>
+
+    <div class="flex space-x-4">
+      <%= form.submit "Create Room", class: "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      <%= link_to "Cancel", chat_rooms_path, class: "flex-1 text-center bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-md" %>
+    </div>
+  <% end %>
+</div>

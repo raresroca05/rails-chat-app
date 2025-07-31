@@ -1,0 +1,63 @@
+<%= turbo_stream_from "chat_room_#{@chat_room.id}_messages" %>
+
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg" data-controller="chat-room">
+  <!-- Chat Room Header -->
+  <div class="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold"><%= @chat_room.name %></h1>
+        <p class="text-blue-100"><%= pluralize(@chat_room.users.count, 'member') %> online</p>
+      </div>
+      <div class="flex space-x-2">
+        <%= link_to "Back to Rooms", chat_rooms_path, 
+            class: "bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded" %>
+        <% unless @chat_room.has_member?(current_user) %>
+          <%= button_to "Join Room", join_chat_room_path(@chat_room), method: :post,
+              class: "bg-green-500 hover:bg-green-400 text-white px-3 py-1 rounded" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages Area -->
+  <div class="h-96 overflow-y-auto p-6 border-b" id="messages" data-chat-room-target="messages">
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <%= render "messages/message", message: message, current_user: current_user %>
+      <% end %>
+    <% else %>
+      <div class="text-center text-gray-500 py-8">
+        <p>No messages yet. Start the conversation!</p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Message Form -->
+  <% if @chat_room.has_member?(current_user) %>
+    <div class="p-6">
+      <%= form_with model: [@chat_room, @message], local: false, class: "flex space-x-4", data: { chat_room_target: "form", action: "turbo:submit-end->chat-room#messageAdded" } do |form| %>
+        <div class="flex-1">
+          <%= form.text_area :content, rows: 2, placeholder: "Type your message...", 
+              class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 resize-none" %>
+        </div>
+        <div class="flex-shrink-0">
+          <%= form.submit "Send", class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium h-full" %>
+        </div>
+      <% end %>
+      
+      <% if @message && @message.errors.any? %>
+        <div class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded">
+          <% @message.errors.full_messages.each do |message| %>
+            <p><%= message %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="p-6 text-center bg-gray-50 rounded-b-lg">
+      <p class="text-gray-600 mb-4">You need to join this room to send messages.</p>
+      <%= button_to "Join Room", join_chat_room_path(@chat_room), method: :post,
+          class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium" %>
+    </div>
+  <% end %>
+</div>

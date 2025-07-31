@@ -1,0 +1,60 @@
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Chat Rooms</h1>
+    <%= link_to "Create New Room", new_chat_room_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium" %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Your Rooms -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">Your Rooms</h2>
+      <% if @user_rooms.any? %>
+        <div class="space-y-3">
+          <% @user_rooms.each do |room| %>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <h3 class="font-medium text-gray-900"><%= room.name %></h3>
+                <p class="text-sm text-gray-600"><%= pluralize(room.users.count, 'member') %></p>
+              </div>
+              <div class="flex space-x-2">
+                <%= link_to "Enter", room, class: "bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm" %>
+                <%= button_to "Leave", leave_chat_room_path(room), method: :delete, 
+                    class: "bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm",
+                    confirm: "Are you sure you want to leave #{room.name}?" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">You haven't joined any rooms yet.</p>
+      <% end %>
+    </div>
+
+    <!-- All Rooms -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4">All Rooms</h2>
+      <% if @chat_rooms.any? %>
+        <div class="space-y-3">
+          <% @chat_rooms.each do |room| %>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div>
+                <h3 class="font-medium text-gray-900"><%= room.name %></h3>
+                <p class="text-sm text-gray-600"><%= pluralize(room.users.count, 'member') %></p>
+              </div>
+              <div>
+                <% if room.has_member?(current_user) %>
+                  <%= link_to "Enter", room, class: "bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm" %>
+                <% else %>
+                  <%= button_to "Join", join_chat_room_path(room), method: :post, 
+                      class: "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">No chat rooms available. Create the first one!</p>
+      <% end %>
+    </div>
+  </div>
+</div>
