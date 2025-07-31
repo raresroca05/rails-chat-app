@@ -9,6 +9,22 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Authentication
+  resource :session, only: [ :new, :create, :destroy ]
+  resource :registration, only: [ :new, :create ]
+
+  # Chat rooms
+  resources :chat_rooms do
+    resources :messages, only: [ :create ]
+    member do
+      post :join
+      delete :leave
+    end
+  end
+
+  # Home page
+  get "home", to: "home#index"
+
+  # Root path
+  root "home#index"
 end
