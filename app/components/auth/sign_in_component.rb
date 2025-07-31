@@ -23,7 +23,7 @@ class Auth::SignInComponent < ApplicationComponent
   def render_email_field(form)
     div do
       form.label :email, class: "block text-sm font-medium text-gray-700"
-      form.email_field :email, 
+      form.email_field :email,
         class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
     end
   end

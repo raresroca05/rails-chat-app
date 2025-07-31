@@ -5,7 +5,7 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    
+
     if @user.save
       sign_in(@user)
       redirect_to root_path, notice: "Welcome to Rails Chat, #{@user.display_name}!"
@@ -13,9 +13,9 @@ class RegistrationsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-  
+
   private
-  
+
   def user_params
     params.require(:user).permit(:email, :display_name, :password, :password_confirmation)
   end

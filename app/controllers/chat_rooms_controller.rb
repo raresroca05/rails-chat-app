@@ -1,7 +1,7 @@
 class ChatRoomsController < ApplicationController
   before_action :require_authentication
-  before_action :set_chat_room, only: [:show, :join, :leave]
-  
+  before_action :set_chat_room, only: [ :show, :join, :leave ]
+
   def index
     @chat_rooms = ChatRoom.all
     @user_rooms = current_user.chat_rooms
@@ -18,7 +18,7 @@ class ChatRoomsController < ApplicationController
 
   def create
     @chat_room = ChatRoom.new(chat_room_params)
-    
+
     if @chat_room.save
       @chat_room.add_member(current_user)
       redirect_to @chat_room, notice: "#{@chat_room.name} was created successfully!"
@@ -36,13 +36,13 @@ class ChatRoomsController < ApplicationController
     @chat_room.remove_member(current_user)
     redirect_to chat_rooms_path, notice: "You left #{@chat_room.name}"
   end
-  
+
   private
-  
+
   def set_chat_room
     @chat_room = ChatRoom.find(params[:id])
   end
-  
+
   def chat_room_params
     params.require(:chat_room).permit(:name)
   end
